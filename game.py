@@ -33,7 +33,8 @@ class Game:
         '''
         print(f'Deck shuffle sequence: {self.master_seq}')
         print(f"Two players' sequences: {self.two_player_seqs}")
-
+        
+        # call function to get statistics from this deck shuffle and combination of players' sequences
         win_stats = self._recurse()
         print(f"Win stats this round:{win_stats} \n")
 
@@ -49,21 +50,38 @@ class Game:
                  elem_idx: int = 0
                  ) -> dict:
         '''
+        Recursive method to iterate through this deck shuffle with this combination of players' 
+        sequences, storing the top seq_len cards and making comparisons between this and the sequences,
+        tracking statistics for tricks and cards 
 
         Arguments:
-            memory (queue.Queue):
-            tricks (list):
-            p1_cards (list):
-            p2_cards (list):
-            extra (list):
-            num_cards (int):
-            elem_idx (int):
+            memory (queue.Queue): the recursively-updated queue of length seq_len or less, putting and 
+                                  getting from it as it cycles through the current combination and 
+                                  shuffle, against which comparison occurs with the players' sequences, 
+                                  checking for tricks
+            tricks (list): the recursively-updated list of length 2 for this shuffle with this 
+                           combination of sequences, tracking the number of tricks obtained by 
+                           Players 1 and 2
+            p1_cards (list): the recursively-updated list of length 1 for this shuffle with this 
+                             combination of sequences, tracking the number of cards obtained by Player 1
+            p2_cards (list): the recursively-updated list of length 1 for this shuffle with this 
+                             combination of sequences, tracking the number of cards obtained by Player 2
+            extra (list): the recursively-updated list of length 1 for this shuffle with this 
+                          combination of sequences, tracking the number of extra cards won by 
+                          neither Players
+            num_cards (int): the recursively-updated int for this shuffle with this combination of 
+                             sequences, tracking the number of cards in play (on the table, not in 
+                             either player's hand) eventually added to p1_cards[], p2_cards[], or extra[] 
+            elem_idx (int):  the recursively-updated int for this shuffle with this combination, 
+                             iterating through the deck and tracking the current index, method concludes 
+                             when this int reaches deck length
 
         Output:
             win_stats (dict): the dictionary from a processed simulation containing 
                               a list of each player's number of tricks, card counts 
                               for each player, and the number of extra cards from this game
         '''
+        # add elements to the various lists if starting from the first function call on this deck
         if memory is None:
             memory = queue.Queue()
         if tricks is None:
@@ -74,46 +92,60 @@ class Game:
             p2_cards = [0]  
         if extra is None:
             extra = [0]
-
+        
+        # iterate through this deck with this combination of sequences
         if(elem_idx < len(self.master_seq)):
-            # while we're still iterating through this deck
-
+            
+            # add one card to deck to bring num cards in queue between 1 and seq_len 
+            # for upcoming sequence comparison
             memory.put(self.master_seq[elem_idx])
             num_cards+=1
             print(f'Current {self.seq_len}-card sequence on the table: {tuple(memory.queue)}')
             
+            # trick and cards for p1 if p1 sequence matches the top seq_len cards on the table 
             if(tuple(memory.queue) == self.two_player_seqs[0]):
-                #point for player 1            
                 tricks[0]+=1
                 p1_cards[0]+=num_cards
                 num_cards = 0
                 print("P1 trick")
-                while not memory.empty():
+
+                #remove cards from memory to simulate all the in-play cards going to p1
+                while not memory.empty(): 
                     memory.get()
                 
+                # recurse through this method to make the comparison repeatedly until end of deck 
                 return self._recurse(memory, tricks, p1_cards, 
                                     p2_cards, extra, num_cards, elem_idx+1)
             
+            # trick and cards for p2 if p2 sequence matches the top seq_len cards on the table 
             elif (tuple(memory.queue) == self.two_player_seqs[1]):
-                #point for player two 
                 tricks[1]+=1
                 p2_cards[0]+=num_cards
                 num_cards = 0
                 print("P2 trick")
-                while not memory.empty():
+
+                #remove cards from memory to simulate all the in-play cards going to p1
+                while not memory.empty(): 
                     memory.get()
+                
+                # recurse through this method to make the comparison repeatedly until end of deck 
                 return self._recurse(memory, tricks, p1_cards, 
                                     p2_cards, extra, num_cards, elem_idx+1)            
+
+            # if neither sequence matches the top seq_len cards on the table, 
+            # remove first added card, keeping queue length at seq_len-1 for next recursive comparison 
             else:
-                # tie point
                 if(memory.qsize()>=self.seq_len):
-                    memory.get()       
+                    memory.get() 
+                
+                # recurse through this method to make the comparison repeatedly until end of deck 
                 return self._recurse(memory, tricks, p1_cards, 
-                                    p2_cards, extra, num_cards, elem_idx+1)        
+                                     p2_cards, extra, num_cards, elem_idx+1)        
         else: 
-            # done iterating through deck, break and return the statistics here
+            # done iterating through full deck, break and return the statistics here in dict form
             extra[0]+=num_cards
             print("Round Over")
+
             win_stats = {"tricks": tricks, "p1_cards": p1_cards, 
                          "p2_cards": p2_cards, "extra cards": extra}
             return(win_stats)

@@ -16,6 +16,7 @@ def _score_sim_by_tricks(win_stats: dict) -> int:
         Integer representing the winner's player number based on who collected more tricks
             (return 1 for player one, 2 for player two, or 0 for instances of a tie)
     '''
+
     if(win_stats["tricks"][0]>win_stats["tricks"][1]):
         return(1)
     elif(win_stats["tricks"][0]<win_stats["tricks"][1]):
@@ -72,7 +73,7 @@ def run_full_sim_and_score(master_seq_list: list,
                                          frequency of player two's wins
 
     '''
-
+    # initialize all data storage objects to track of statistics for all decks and combinations
     all_games_output = pd.DataFrame(columns = ["p1 combo", "p2 combo", 
                                                "p1 winner freq", "p2 winner freq"])
     p1_seqs = []
@@ -83,11 +84,13 @@ def run_full_sim_and_score(master_seq_list: list,
     freq_wins_two = [0] * len(all_combos)
     winner_twos = [0] * len(all_combos)
 
+    # iterate through all the deck shuffles generated
     for current_deck_idx in range(num_decks):
         master_seq = master_seq_list[current_deck_idx].tolist()
         winners = []
         count = 0
 
+        # iterate through all combinations of player sequences for the current deck
         for this_combo in all_combos:
             count+=1
 
@@ -98,13 +101,16 @@ def run_full_sim_and_score(master_seq_list: list,
                 p1_seqs.append(''.join(str(e) for e in this_combo[0]))
                 p2_seqs.append(''.join(str(e) for e in this_combo[1]))
 
+            # instantiate Game object with current deck and current player sequence combination 
             g = Game(two_player_seqs = this_combo, 
-                        master_seq = master_seq, 
-                        deck_size = deck_size, 
-                        seq_len = seq_len)
+                     master_seq = master_seq, 
+                     deck_size = deck_size, 
+                     seq_len = seq_len)
             
+            # play this Game
             win_stats = g.play_this_game_deck()
 
+            # score this Game
             if (scoring == "tricks"):
                 winners.append(_score_sim_by_tricks(win_stats))
             elif (scoring == "cards"):
@@ -114,6 +120,7 @@ def run_full_sim_and_score(master_seq_list: list,
 
         print(f'Winners for this deck over all shuffles: {winners}')
 
+        # calculate cumulative wins for each players so far across all games
         for index, item in enumerate(winners):
             winner_ones[index] += 1 if (item==1) else 0
         print(f"\nPlayer one's cumulative wins in this simulation so far: {winner_ones}")
@@ -122,12 +129,14 @@ def run_full_sim_and_score(master_seq_list: list,
             winner_twos[index] += 1 if (item==2) else 0
         print(f"Player two's cumulative wins in this simulation so far: {winner_twos}")
 
+        # calculate frequency of wins for each players so far across all games
         freq_wins_one=[current_deck_idx/num_decks for current_deck_idx in winner_ones]
         freq_wins_two=[current_deck_idx/num_decks for current_deck_idx in winner_twos]
     print('\n Simulation concluded, all card decks have been run with all shuffles')
     print(f"\nFreq wins player 1: {freq_wins_one}")
     print(f"Freq wins player 2: {freq_wins_two}")
 
+    # save and store all the winning frequency and combination data to display after all Games concluded 
     all_games_output["p1 combo"]=p1_seqs
     all_games_output["p2 combo"]=p2_seqs
     all_games_output["p1 winner freq"]=freq_wins_one

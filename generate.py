@@ -13,6 +13,8 @@ def create_game_combos(seq_len: int=3) -> list:
         combinations (list): 3D list of (2^seq_len)^2-(2^seq_len) tuples of length 2, 
                              each tuple length seq_len 
     '''
+
+    # use itertools module to match up all possible player sequences of seq_len with one another
     p1 = list(itertools.product([0,1], repeat=seq_len))
     p2 = list(itertools.product([0,1], repeat=seq_len))
     combinations = [(x, y) for x in p1 for y in p2 if x!=y]
