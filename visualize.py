@@ -18,25 +18,19 @@ def visualize_all_games_output(all_games_output: pd.DataFrame,
         title (str): the title to give to this visualization (sns heatmap)
     '''
 
-    # Define the directory where you want to save the heatmap
+    # the directory where to save the heatmap, create if doesn't exist
     save_dir = "heatmaps"  
-
-    # Create the directory if it doesn't exist
     os.makedirs(save_dir, exist_ok=True)
 
-    # Generate and save the heatmap
+    # generate and save heatmap
     ax = sns.heatmap(all_games_output, linewidth=0.5, cmap='viridis', annot=True)
     ax.set_title(title)
 
-    # Get figure and save it
     fig = ax.get_figure()
     file_path = os.path.join(save_dir, f"{title}.png")
     fig.savefig(file_path, dpi=300, bbox_inches="tight")  
 
     plt.close(fig)
-
-    # put in the sequences too on the plot, grey out overlaps, 
-    # generate 2 one for each player, and maybe do half?
 
     return
 
