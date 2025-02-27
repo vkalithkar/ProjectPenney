@@ -22,7 +22,7 @@ def _score_sim_by_tricks(win_stats: dict) -> int:
     elif(win_stats["tricks"][0]<win_stats["tricks"][1]):
         return(2)
     else:
-        return 0
+        return 0 # tie situation
 
 def _score_sim_by_cards(win_stats: dict) -> int:
     '''
@@ -43,14 +43,14 @@ def _score_sim_by_cards(win_stats: dict) -> int:
     elif(win_stats['p1_cards'][0]<win_stats["p2_cards"][0]):
         return(2)
     else:
-        return 0
+        return 0 # tie situation
     
 def run_full_sim_and_score(master_seq_list: list, 
                            deck_size: int, 
                            seq_len: int, 
                            num_decks: int, 
                            all_combos: list, 
-                           scoring: str = "tricks"
+                           scoring: str = "TRICKS"
                            ) -> pd.DataFrame:
     '''
     Processes the entire simulation with the desired number of deck shuffles to cumulatively 
@@ -73,6 +73,10 @@ def run_full_sim_and_score(master_seq_list: list,
                                          frequency of player two's wins
 
     '''
+    # first, account for Invalid Scoring Method error
+    if(scoring != "TRICKS" and scoring != "CARDS"):
+        raise Exception("Invalid Scoring Method")
+
     # initialize all data storage objects to track of statistics for all decks and combinations
     all_games_output = pd.DataFrame(columns = ["p1 combo", "p2 combo", 
                                                "p1 winner freq", "p2 winner freq"])
@@ -110,13 +114,11 @@ def run_full_sim_and_score(master_seq_list: list,
             # play this Game
             win_stats = g.play_this_game_deck()
 
-            # score this Game
-            if (scoring == "tricks"):
+            # score this Game, Exception for Invalid Scoring Method already accounted for
+            if (scoring == "TRICKS"):
                 winners.append(_score_sim_by_tricks(win_stats))
-            elif (scoring == "cards"):
+            elif (scoring == "CARDS"):
                 winners.append(_score_sim_by_cards(win_stats))
-            else:
-                print("Invalid scoring method")
 
         print(f'Winners for this deck over all shuffles: {winners}')
 
