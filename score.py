@@ -4,15 +4,17 @@ import pandas as pd
 
 def _score_sim_by_tricks(win_stats: dict) -> int:
     '''
-    Compare the entry in the win_stats dict to see 
-    which player won more tricks (number of sequences) in this game
+    Compare the entry in the win_stats dict to see which player won more tricks 
+    (number of sequences) in this game
     
     Arguments:
-        win_stats (dict): the list of 5 elements from a previously-ran simulation containing 
-                          each player's number of tricks and number of sequences that game
+        win_stats (dict): the dictionary from a processed simulation containing 
+                          a list of each player's number of tricks, card counts 
+                          for each player, and the number of extra cards from this game
 
     Output: 
-
+        Integer representing the winner's player number based on who collected more tricks
+            (return 1 for player one, 2 for player two, or 0 for instances of a tie)
     '''
     if(win_stats["tricks"][0]>win_stats["tricks"][1]):
         return(1)
@@ -23,15 +25,17 @@ def _score_sim_by_tricks(win_stats: dict) -> int:
 
 def _score_sim_by_cards(win_stats: dict) -> int:
     '''
-    Compare the entry in the win_stats dict to see 
-    which player won more cards (total number of deck cards) in this game
+    Compare the entry in the win_stats dict to see which player won more cards 
+    (total number of deck cards) in this game
 
     Arguments:
-        win_stats (dict): the list of 5 elements from a previously-ran simulation containing 
-                          each player's number of tricks and number of sequences that game
-        
-    Output:
-
+        win_stats (dict): the dictionary from a processed simulation containing 
+                          a list of each player's number of tricks, card counts 
+                          for each player, and the number of extra cards from this game
+    
+    Output: 
+        Integer representing the winner's player number based on who collected more cards
+            (return 1 for player one, 2 for player two, or 0 for instances of a tie)
     '''
     if(win_stats['p1_cards'][0]>win_stats["p2_cards"][0]):
         return(1)
@@ -40,25 +44,32 @@ def _score_sim_by_cards(win_stats: dict) -> int:
     else:
         return 0
     
-def run_full_sim_and_score(master_seq_list: list, deck_size: int, 
-                           seq_len: int, num_decks: int, 
-                           all_combos: list, scoring: str = "tricks"
+def run_full_sim_and_score(master_seq_list: list, 
+                           deck_size: int, 
+                           seq_len: int, 
+                           num_decks: int, 
+                           all_combos: list, 
+                           scoring: str = "tricks"
                            ) -> pd.DataFrame:
     '''
-    Runs the entire simulation with the desired number of executions to cumulatively calculate
-    the frequency of player 1 winning
+    Processes the entire simulation with the desired number of deck shuffles to cumulatively 
+    calculate the frequency of both players winning
 
     Arguments:
-        master_seq_list (list):
-        deck_size (int):
-        seq_len (int):
+        master_seq_list (list): all shuffled decks for the simulation to process against
+        deck_size (int): the number of cards in each deck
+        seq_len (int): the number of elements in each player's chosen sequence 
         num_decks (int): the desired number of Monte Carlo simulations to execute this simulation
         all_combos (list): all possible ways for players to match sequences 
                            while playing the game (pregenerated)
         scoring (str): the desired method to score the players (see scoring methods)
            
     Output:
-        all_games_output (pd.DataFrame):
+        all_games_output (pd.DataFrame): the raw data from a full simulation from one player's 
+                                         perspective containing columns for player one's sequences, 
+                                         player two's sequences, the sequence combination's frequency 
+                                         of player one's wins, and the sequence combination's 
+                                         frequency of player two's wins
 
     '''
 
