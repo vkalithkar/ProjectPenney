@@ -2,15 +2,16 @@ import queue
 
 class Game:
     '''
-    Each individual instance of a game, meaning the chosen sequences of the two players
-    and other general information like the size of deck and length of sequences
-
+    A Game object contains each individual instance of a single deck shuffle game, 
+    meaning the chosen sequences of the two players and other general information 
+    like the size of deck and length of sequences.
     '''
     def __init__(self,
                  two_player_seqs: list,
                  master_seq: list,
                  deck_size: int = 52,
-                 seq_len: int = 3) -> None:
+                 seq_len: int = 3
+                 ) -> None:
         self.two_player_seqs = two_player_seqs
         self.deck_size = deck_size
         self.master_seq = master_seq
@@ -23,10 +24,12 @@ class Game:
     def play_this_game_deck(self) -> dict:
         '''
         Assess the winner of this game given the players' chosen sequences and 
-        the current shuffle, by breaking down the deck sequence
+        the current shuffle by breaking down the deck sequence
 
         Output:
-            win_stats (dict):
+            win_stats (dict): the dictionary from a processed simulation containing 
+                              a list of each player's number of tricks, card counts 
+                              for each player, and the number of extra cards from this game
         '''
         print(f'Deck shuffle sequence: {self.master_seq}')
         print(f"Two players' sequences: {self.two_player_seqs}")
@@ -36,22 +39,30 @@ class Game:
 
         return win_stats
     
-    def _recurse(self, memory: queue.Queue=None, 
-                 tricks:list = None, p1_cards=None, 
-                 p2_cards=None, extra=None, 
-                 num_cards=0, elem=0) -> dict:
+    def _recurse(self, 
+                 memory: queue.Queue = None, 
+                 tricks: list = None, 
+                 p1_cards: list = None, 
+                 p2_cards: list = None, 
+                 extra: list = None, 
+                 num_cards: int = 0, 
+                 elem_idx: int = 0
+                 ) -> dict:
         '''
+
         Arguments:
             memory (queue.Queue):
             tricks (list):
-            p1_cards ():
-            p2_cards ():
-            extra ():
-            num_cards ():
-            elem ():
+            p1_cards (list):
+            p2_cards (list):
+            extra (list):
+            num_cards (int):
+            elem_idx (int):
 
         Output:
-            win_stats (dict):
+            win_stats (dict): the dictionary from a processed simulation containing 
+                              a list of each player's number of tricks, card counts 
+                              for each player, and the number of extra cards from this game
         '''
         if memory is None:
             memory = queue.Queue()
@@ -64,10 +75,10 @@ class Game:
         if extra is None:
             extra = [0]
 
-        if(elem < len(self.master_seq)):
+        if(elem_idx < len(self.master_seq)):
             # while we're still iterating through this deck
 
-            memory.put(self.master_seq[elem])
+            memory.put(self.master_seq[elem_idx])
             num_cards+=1
             print(f'Current {self.seq_len}-card sequence on the table: {tuple(memory.queue)}')
             
@@ -81,7 +92,7 @@ class Game:
                     memory.get()
                 
                 return self._recurse(memory, tricks, p1_cards, 
-                                    p2_cards, extra, num_cards, elem+1)
+                                    p2_cards, extra, num_cards, elem_idx+1)
             
             elif (tuple(memory.queue) == self.two_player_seqs[1]):
                 #point for player two 
@@ -92,13 +103,13 @@ class Game:
                 while not memory.empty():
                     memory.get()
                 return self._recurse(memory, tricks, p1_cards, 
-                                    p2_cards, extra, num_cards, elem+1)            
+                                    p2_cards, extra, num_cards, elem_idx+1)            
             else:
                 # tie point
                 if(memory.qsize()>=self.seq_len):
                     memory.get()       
                 return self._recurse(memory, tricks, p1_cards, 
-                                    p2_cards, extra, num_cards, elem+1)        
+                                    p2_cards, extra, num_cards, elem_idx+1)        
         else: 
             # done iterating through deck, break and return the statistics here
             extra[0]+=num_cards

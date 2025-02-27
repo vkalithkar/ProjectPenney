@@ -7,12 +7,11 @@ def create_game_combos(seq_len: int=3) -> list:
     excluding matchups between 2 equal sequence choices.
 
     Arguments:
-        seq_len (int): The number of elements per sequence that 
-                       the players choose to scan for
+        seq_len (int): The number of elements per sequence that players select
     
     Output:
         combinations (list): 3D list of (2^seq_len)^2-(2^seq_len) tuples of length 2, 
-                      each tuple length seq_len 
+                             each tuple length seq_len 
     '''
     p1 = list(itertools.product([0,1], repeat=seq_len))
     p2 = list(itertools.product([0,1], repeat=seq_len))
@@ -20,27 +19,32 @@ def create_game_combos(seq_len: int=3) -> list:
 
     return(combinations)
 
-# Code adapted from student Yueran Shi
+# Function adapted from student Yueran Shi from Piazza
 def _get_init_deck(half_deck_size: int) -> np.ndarray:
     """
     Generate an initial deck with equal 0s and 1s.
     
     Arguments:
-        half_deck_size (int):
+        half_deck_size (int): half the size of each unshuffled shuffled deck, 
+                              representing the number of 0s and 1s
 
     Output:
         decks (np.ndarray): 2D array of shape (n_decks, half_num_cards), each row is a shuffled deck.
         seeds (np.ndarray): 1D array of seeds used for shuffling.
     """
     return np.array([0] * half_deck_size + [1] * half_deck_size)
-    
-def get_n_decks(n_decks: int, half_num_cards: int) -> tuple[np.ndarray, np.ndarray]:
+
+# Function adapted from student Yueran Shi from Piazza
+def get_n_decks(n_decks: int, 
+                half_num_cards: int
+                ) -> tuple[np.ndarray, np.ndarray]:
     """
     Efficiently generate `n_decks` shuffled decks using NumPy.
 
     Arguments:
-        n_decks (int):
-        half_num_cards (int):
+        n_decks (int): number of decks to generate
+        half_num_cards (int): half the size of each to-be shuffled deck, 
+                              representing the number of 0s and 1s
     
     Output:
         decks (np.ndarray): 2D array of shape (n_decks, half_num_cards), each row is a shuffled deck.

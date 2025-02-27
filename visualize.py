@@ -3,15 +3,19 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 import os
 
-def visualize_all_games_output(all_games_output: pd.DataFrame, title: str = None) -> None:
+def visualize_all_games_output(all_games_output: pd.DataFrame, 
+                               title: str = None
+                               ) -> None:
     '''
-    Visualize and directly show both plots for percentage of player 1 wins and player 2 wins
+    Visualizes and saves show both plots for frequency of player 1 wins and player 2 wins
+    over all shuffles and chosen sequence combinations
 
     Arguments:
-        all_games_output:
-    
-    Output: 
-        None 
+        all_games_output (pd.DataFrame): the pivoted data from a full simulation from one player's 
+                                         perspective from which to directly create a heatmap, 
+                                         the axes of which are the players' sequences,
+                                         and data being frequency of that player's wins
+        title (str): the title to give to this visualization (sns heatmap)
     '''
 
     # Define the directory where you want to save the heatmap

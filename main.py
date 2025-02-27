@@ -6,7 +6,7 @@ import datetime
 
 seq_len = 3
 deck_size = 52
-num_decks = 1000
+num_decks = 10
 scoring = "tricks"
 
 all_combos = create_game_combos(seq_len = seq_len) 
@@ -32,4 +32,8 @@ visualize_all_games_output(all_games_output = all_games_output_one,
 visualize_all_games_output(all_games_output = all_games_output_two,
                            title = f"P2's Win Freq. Over {num_decks} Decks Scored by {scoring}")
 
-#save logs to csv
+# save logs to csv
+#clean up function explanations
+    # 4 in game (3/4) (recurse)
+#clean up function args
+    # 4 in game (3/4) (recurse)
