@@ -22,7 +22,7 @@ sys.stdout = log_file
 # update these parameters for variations on the simulation
 seq_len = 3
 deck_size = 52 # even number, or else deck generation code truncates when halving deck
-num_decks = 1000
+num_decks = 10
 scoring = "CARDS" #alternatively, scoring = "CARDS"
 
 # create all of the possible sequence combinations match-ups of length seq_len between the two players
