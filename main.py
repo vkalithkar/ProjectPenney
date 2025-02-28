@@ -31,6 +31,7 @@ all_combos = create_game_combos(seq_len = seq_len)
 
 # create a num_decks amount of randomly generated deck shuffles of deck_size number of cards
 # store in a list of lists
+# didn't have time to read this in from the file after pre-generating them yet
 master_seq_list, seeds = get_n_decks(n_decks = num_decks, half_num_cards = int(deck_size/2))
 
 print(f"Date and time of this run: {current_time}")

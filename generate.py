@@ -60,4 +60,6 @@ def get_n_decks(n_decks: int,
         np.random.seed(seed)
         np.random.shuffle(decks[i])  # Shuffle each row with a different seed
     
+    # output as .csv
+    np.savetxt("decks_output.csv", decks, delimiter=",", fmt="%d")  
     return decks, seeds
