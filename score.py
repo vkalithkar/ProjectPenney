@@ -134,7 +134,7 @@ def run_full_sim_and_score(master_seq_list: list,
         # calculate frequency of wins for each players so far across all games
         freq_wins_one=[current_deck_idx/num_decks for current_deck_idx in winner_ones]
         freq_wins_two=[current_deck_idx/num_decks for current_deck_idx in winner_twos]
-    print('\n Simulation concluded, all card decks have been run with all shuffles')
+    print('\n-----------------------Simulation concluded, all card decks have been run with all shuffles-----------------------')
     print(f"\nFreq wins player 1: {freq_wins_one}")
     print(f"Freq wins player 2: {freq_wins_two}")
 
